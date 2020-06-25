@@ -1,34 +1,33 @@
 #include <Wire.h>
-#include "LiquidCrystal_I2C.h"                                                  //อ้างอิงและดึงคำสั่งจาก library
+#include "LiquidCrystal_I2C.h"                                                  
 
-int sensorPin = A0;                                                             //กำหนดตัวแปร sensorPin = A0
-int RELAY1 = 2;                                                                 //กำหนดตัวแปร RELAY = 2
+int sensorPin = A0;                                                             
+int RELAY1 = 2;                                                                 
 int LedRED = 12;
 int LEDgreen = 11;
 int smokeA0 = 0;
 int sensorThres = 400;
-LiquidCrystal_I2C lcd(0x27, 16, 2) ;                                            // ฟังชั่นของ lcd  ชนิดมี16หลัก2แถว
-
+LiquidCrystal_I2C lcd(0x27, 16, 2) ;                                            
   void setup() 
-{                                                                               //เริ่มต้นการทำงานการตั้งค่า
+{                                                                               
     Serial.begin(9600);                                                        
     Serial.println("Starting");
-    lcd.init();                                                                 //เริ่มต้นการทำงานของ lcd
-    lcd.backlight();                                                            // แบคไลท์ทำงาน ไฟติด
-    Serial.begin(9600);                                                         //ความเร็วในการส่งข้อมูลแบบอนุกรม9600เซ็กกั้น
-    pinMode(RELAY1, OUTPUT);                                                    // กำหนดให้ relay เป็น output
+    lcd.init();                                                                 
+    lcd.backlight();                                                            
+    Serial.begin(9600);                                                        
+    pinMode(RELAY1, OUTPUT);                                                    
     pinMode(LedRED, OUTPUT);
     pinMode(LEDgreen, OUTPUT);
     pinMode(smokeA0, INPUT);
 }
 
-  void loop()                                                                     //การทำงานวนซ้ำๆไป
+  void loop()                                                                     
 {
     Serial.println("RUNNING !");
-    int sensorValue;                                                            //ประกาศตัวแปร sensor value
-    sensorValue = analogRead(sensorPin);                                        // อา่นค่าตัวแปรของ sersorPin เก็บไว้ที่ sensor value
+    int sensorValue;                                                            
+    sensorValue = analogRead(sensorPin);                                        
     sensorValue = map(sensorValue, 0, 1023, 100, 0); 
-    Serial.print("Soil moisture: ");                                            //ความชื้นในดิน
+    Serial.print("Soil moisture: ");                                            
     Serial.print(sensorValue);
     Serial.println(" %");
     int analogSensor = analogRead(smokeA0);
@@ -49,23 +48,23 @@ LiquidCrystal_I2C lcd(0x27, 16, 2) ;                                            
      delay(100);
 
     
-    if(sensorValue <=40 )                                                       //ถ้า sensor value วัดได้น้อยกว่าหรือเท่า40 ให้ทำงานต่อไปในปีกกา
+    if(sensorValue <=40 )                                                      
     { 
-        digitalWrite(RELAY1, HIGH);                                             // ส่งข้อมูลไปยังขาdigitalให้RELAYทำงานเป็น high เป็น1
-        lcd.setCursor(0, 0);                                                    // เคอเซอร์ตัวอังษร หลัก 0 แถวที่ 0
-        lcd.print(" Pumb  on  ");                                               // เเสดงข้อความบน lcd
+        digitalWrite(RELAY1, HIGH);                                             
+        lcd.setCursor(0, 0);                                                   
+        lcd.print(" Pumb  on  ");                                               
         Serial.print(" Pumb  on  ");
-        lcd.setCursor(0, 1);                                                    // เคอเซอร์ตัวอังษร หลัก 0 แถวที่ 1 
-        lcd.print("Moisture < 40");                                             //เเสดงข้อความบนจอ lcd moisture น้อยกว่า 40
+        lcd.setCursor(0, 1);                                                     
+        lcd.print("Moisture < 40");                                             
         Serial.println("Moisture < 40");
     }
     else       //ถ้าไม่ตรงเงื่อนไข
     {   
         digitalWrite(RELAY1, LOW);  
-        lcd.setCursor(0, 0);                                                    // เคอเซอร์ตัวอังษร หลัก 0 แถวที่ 0
-        lcd.print(" Pumb off  ");                                               // เเสดงข้อความบน lcd
+        lcd.setCursor(0, 0);                                                    
+        lcd.print(" Pumb off  ");                                               
         Serial.print(" Pumb off  ");
-        lcd.setCursor(0, 1);                                                    // เคอเซอร์ตัวอังษร หลัก 0 แถวที่ 1
+        lcd.setCursor(0, 1);                                                    
         lcd.print("Moisture > 40");  
         Serial.println("Moisture > 40");
     }
