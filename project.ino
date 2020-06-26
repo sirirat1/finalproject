@@ -1,29 +1,25 @@
-int LedRED = 12;
-int LEDgreen = 11;
-int smokeA0 = 0;
-
-int sensorThres = 400;  
-
-void setup() {
+#include "MQ2.h"
+#include "LiquidCrystal_I2C.h"
+LiquidCrystal_I2C lcd(0x3F, 16, 2);
+int Analog_Input = A0;
+int smoke;
+MQ2 mq2(Analog_Input);
+void setup()
+{
   Serial.begin(9600);
-  pinMode(LedRED, OUTPUT);
-  pinMode(LEDgreen, OUTPUT);
-  pinMode(smokeA0, INPUT);
+  lcd.begin();
+  lcd.backlight();
+  mq2.begin();
+  lcd.init();
 }
-
-void loop() {
-  int analogSensor = analogRead(smokeA0);
-  Serial.print("Pin A0: ");
-  Serial.println(analogSensor); 
-
-  if (analogSensor > sensorThres)  {
-    digitalWrite(LedRED, HIGH);
-    digitalWrite(LEDgreen, LOW);
-  }
-
-  else  {
-    digitalWrite(LedRED, LOW);
-    digitalWrite(LEDgreen, HIGH);
-  }
-  delay(100);
+void loop(){
+  float* values= mq2.read(true); 
+  smoke = mq2.readSmoke();
+  lcd.setCursor(0,0);
+  lcd.print("SMOKE:");
+  lcd.print(smoke);
+  lcd.setCursor(0,1);
+  lcd.print(" %");
+  delay(1000);
 }
+00.
